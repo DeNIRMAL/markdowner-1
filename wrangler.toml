@@ -17,7 +17,8 @@ new_classes = ["Browser"] # Array of new classes
 
 [[kv_namespaces]]
 binding= "MD_CACHE"
-id = "3186489f943d409a9b772d876a58a73e"
+id = "dd8a3d430a3b42fc899f7b83cdb35688"
+preview_id = "b37ef3c41fea428891ab4fbb54a642ab"
 
 [[unsafe.bindings]]
 name = "RATELIMITER"
