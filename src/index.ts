@@ -5,12 +5,23 @@ import { html } from './response';
 export default {
 	async fetch(request: Request, env: Env) {
 		const ip = request.headers.get('cf-connecting-ip');
-		if (!(env.BACKEND_SECURITY_TOKEN === request.headers.get('Authorization')?.replace('Bearer ', ''))) {
-			const { success } = await env.RATELIMITER.limit({ key: ip });
-
-			if (!success || request.url.includes('poemanalysis')) {
-				return new Response('Rate limit exceeded', { status: 429 });
-			}
+		const authToken = request.headers.get('Authorization')?.replace('Bearer ', '');
+		const url = new URL(request.url);
+		
+		// Allow web interface without authentication
+		if (!url.searchParams.has('url')) {
+			return new Response(html, {
+				headers: { 'content-type': 'text/html;charset=UTF-8' },
+			});
+		}
+		
+		// For API requests, require authentication
+		if (!authToken || env.BACKEND_SECURITY_TOKEN !== authToken) {
+			// For private mode, require authentication
+			return new Response('Unauthorized. Please provide a valid Authorization token.', { 
+				status: 401,
+				headers: { 'Content-Type': 'text/plain' }
+			});
 		}
 
 		const id = env.BROWSER.idFromName('browser');
@@ -203,13 +214,7 @@ export class Browser {
 			urls.map(async (url) => {
 				const ip = this.request?.headers.get('cf-connecting-ip');
 
-				if (this.token !== env.BACKEND_SECURITY_TOKEN) {
-					const { success } = await env.RATELIMITER.limit({ key: ip });
-
-					if (!success) {
-						return { url, md: 'Rate limit exceeded' };
-					}
-				}
+				// Authentication is already checked at the entry point
 
 				const id = url + (enableDetailedResponse ? '-detailed' : '') + (this.llmFilter ? '-llm' : '');
 				const cached = await env.MD_CACHE.get(id);
@@ -242,8 +247,6 @@ export class Browser {
 				let md = cached ?? (await classThis.fetchAndProcessPage(url, enableDetailedResponse));
 
 				if (this.llmFilter && !cached) {
-					for (let i = 0; i < 60; i++) await env.RATELIMITER.limit({ key: ip });
-
 					const answer = (await env.AI.run('@cf/qwen/qwen1.5-14b-chat-awq', {
 						prompt: `You are an AI assistant that converts webpage content to markdown while filtering out unnecessary information. Please follow these guidelines:
 Remove any inappropriate content, ads, or irrelevant information

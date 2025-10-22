@@ -20,11 +20,7 @@ binding= "MD_CACHE"
 id = "dd8a3d430a3b42fc899f7b83cdb35688"
 preview_id = "b37ef3c41fea428891ab4fbb54a642ab"
 
-[[unsafe.bindings]]
-name = "RATELIMITER"
-type = "ratelimit"
-namespace_id = "1002"
-simple = { limit = 10, period = 60 } # 10 requests per 60 seconds
+# Rate limiter removed - authentication provides security
 
 [ai]
 binding = "AI"

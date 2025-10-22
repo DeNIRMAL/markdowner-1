@@ -23,6 +23,9 @@ export const html = `<!--
 				<p class="text-lg text-gray-600 dark:text-gray-400">
 					A fast open-source tool to convert any website into LLM-ready markdown data.
 				</p>
+				<div class="bg-yellow-100 dark:bg-yellow-900 border border-yellow-400 text-yellow-700 dark:text-yellow-200 px-4 py-3 rounded mb-4">
+					<strong>🔐 Private Mode:</strong> This API requires authentication. Use the Authorization header with your Bearer token.
+				</div>
 
 				<a href="https://github.com/dhravya/markdowner" class="underline underline-offset-4 hover:underline">
 					<img src="https://pluspng.com/img-png/github-logo-png-white-github-11-icon-free-white-social-icons-256x256.png" alt="Github logo" width="40" height="40" />
@@ -51,7 +54,11 @@ export const html = `<!--
 					</form>
 					<h2 class="text-2xl font-bold">Usage Example</h2>
 					<pre class="bg-gray-100 dark:bg-gray-700 rounded-md p-4 text-sm font-mono">
-			<code>$ curl 'https://md.dhr.wtf/?url=https://example.com'</code></pre>
+			<code>$ curl -H "Authorization: Bearer YOUR_TOKEN" 'https://markdowner.ncdesai143.workers.dev/?url=https://example.com'</code></pre>
+					<h2 class="text-2xl font-bold">Authentication Required</h2>
+					<p class="text-gray-600 dark:text-gray-400 mb-4">
+						All requests must include a valid Authorization header with your Bearer token.
+					</p>
 					<h2 class="text-2xl font-bold">Required Parameters</h2>
 					<ul class="space-y-2">
 						<li>
